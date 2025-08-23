@@ -2,6 +2,9 @@
 .env
 backend/.env
 
+# Claude local development context
+.claude.local.md
+
 # Python
 __pycache__/
 *.py[cod]
