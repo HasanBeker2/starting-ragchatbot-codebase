@@ -75,6 +75,10 @@ async function sendMessage() {
 
         const data = await response.json();
         
+        // Debug: Log the actual data received
+        console.log('Full response data:', data);
+        console.log('Sources in response:', data.sources);
+        
         // Update session ID if new
         if (!currentSessionId) {
             currentSessionId = data.session_id;
@@ -122,10 +126,46 @@ function addMessage(content, type, sources = null, isWelcome = false) {
     let html = `<div class="message-content">${displayContent}</div>`;
     
     if (sources && sources.length > 0) {
+        // Debug log to see what we're getting
+        console.log('Sources received:', JSON.stringify(sources, null, 2));
+        
+        // Format sources - handle both string and object formats
+        const formattedSources = sources.map((source, index) => {
+            console.log(`Processing source ${index}:`, JSON.stringify(source, null, 2), 'Type:', typeof source);
+            
+            if (typeof source === 'string') {
+                // Legacy string format - wrap in source-item class
+                return `<div class="source-item">${escapeHtml(source)}</div>`;
+            } else if (source && typeof source === 'object' && source !== null) {
+                // Handle object format
+                if (source.hasOwnProperty('text')) {
+                    // New structured format with optional link
+                    if (source.link) {
+                        return `<a href="${escapeHtml(source.link)}" target="_blank" rel="noopener noreferrer" class="source-link">${escapeHtml(source.text)}</a>`;
+                    } else {
+                        return `<div class="source-item">${escapeHtml(source.text)}</div>`;
+                    }
+                } else if (source.title) {
+                    return `<div class="source-item">${escapeHtml(source.title)}</div>`;
+                } else if (source.name) {
+                    return `<div class="source-item">${escapeHtml(source.name)}</div>`;
+                } else {
+                    // Show object keys for debugging
+                    const keys = Object.keys(source);
+                    console.warn('Unknown source object format:', source, 'Keys:', keys);
+                    return `<div class="source-item">Unknown source: ${escapeHtml(JSON.stringify(source))}</div>`;
+                }
+            }
+            
+            // Final fallback
+            console.warn('Unexpected source type:', typeof source, source);
+            return `<div class="source-item">${escapeHtml(String(source))}</div>`;
+        });
+
         html += `
             <details class="sources-collapsible">
                 <summary class="sources-header">Sources</summary>
-                <div class="sources-content">${sources.join(', ')}</div>
+                <div class="sources-content">${formattedSources.join('')}</div>
             </details>
         `;
     }
@@ -160,7 +200,8 @@ async function loadCourseStats() {
         if (!response.ok) throw new Error('Failed to load course stats');
         
         const data = await response.json();
-        console.log('Course data received:', data);
+        console.log('Course data received:');
+        console.log(data);
         
         // Update stats in UI
         if (totalCourses) {

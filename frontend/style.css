@@ -716,3 +716,102 @@ details[open] .suggested-header::before {
         width: 280px;
     }
 }
+
+/* Sources Styling */
+.sources-collapsible {
+    margin-top: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: rgba(30, 41, 59, 0.5);
+    overflow: hidden;
+}
+
+.sources-header {
+    padding: 0.75rem 1rem;
+    background-color: var(--surface);
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-secondary);
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.sources-header:hover {
+    background-color: var(--surface-hover);
+}
+
+.sources-header::marker {
+    color: var(--primary-color);
+}
+
+.sources-content {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Source Item (both links and text) */
+.source-item {
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+    word-break: break-word;
+}
+
+/* Clickable Source Links */
+.source-link {
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    word-break: break-word;
+}
+
+.source-link:hover {
+    background-color: var(--surface-hover);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.source-link:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+.source-link:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Subtle visual indicator for linked sources */
+.source-link::after {
+    content: "↗";
+    font-size: 0.75em;
+    margin-left: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    vertical-align: super;
+}
+
+.source-link:hover::after {
+    opacity: 0.6;
+}

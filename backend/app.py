@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any, Union
 import os
 
 from config import config
@@ -43,7 +43,7 @@ class QueryRequest(BaseModel):
 class QueryResponse(BaseModel):
     """Response model for course queries"""
     answer: str
-    sources: List[str]
+    sources: List[Union[str, Dict[str, Any]]]  # Support both string and structured sources
     session_id: str
 
 class CourseStats(BaseModel):
@@ -64,6 +64,13 @@ async def query_documents(request: QueryRequest):
         
         # Process query using RAG system
         answer, sources = rag_system.query(request.query, session_id)
+        
+        # Debug print to see what sources look like
+        print(f"Sources before response: {sources}")
+        print(f"Sources type: {type(sources)}")
+        if sources:
+            print(f"First source: {sources[0]}")
+            print(f"First source type: {type(sources[0])}")
         
         return QueryResponse(
             answer=answer,

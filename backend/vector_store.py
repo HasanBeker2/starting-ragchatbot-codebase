@@ -233,6 +233,25 @@ class VectorStore:
             print(f"Error getting courses metadata: {e}")
             return []
 
+    def get_lesson_link(self, course_title: str, lesson_number: int) -> Optional[str]:
+        """Get lesson link for a specific lesson in a course"""
+        import json
+        try:
+            # Get course metadata by ID (title is the ID)
+            results = self.course_catalog.get(ids=[course_title])
+            if results and 'metadatas' in results and results['metadatas']:
+                metadata = results['metadatas'][0]
+                if 'lessons_json' in metadata:
+                    lessons = json.loads(metadata['lessons_json'])
+                    # Find the specific lesson
+                    for lesson in lessons:
+                        if lesson.get('lesson_number') == lesson_number:
+                            return lesson.get('lesson_link')
+            return None
+        except Exception as e:
+            print(f"Error getting lesson link for {course_title} lesson {lesson_number}: {e}")
+            return None
+
     def get_course_link(self, course_title: str) -> Optional[str]:
         """Get course link for a given course title"""
         try:
